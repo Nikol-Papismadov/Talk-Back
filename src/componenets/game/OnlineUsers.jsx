@@ -5,8 +5,6 @@ import { useLocation } from 'react-router-dom';
 
 const ChatPage = () => {
   const [socket, setSocket] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [inputMessage, setInputMessage] = useState('');
   const [userActivity, setUserActivity] = useState([]);
   const [userList, setUserList] = useState([]);
 
@@ -15,7 +13,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     // Establishing connection to the server
-    const newSocket = io('http://localhost:3001');
+    const newSocket = io('http://localhost:3000');
     setSocket(newSocket);
 
     // Clean up function
@@ -26,30 +24,20 @@ const ChatPage = () => {
     if (socket) {
       // Joining the chat room
       socket.emit('join', username);
+      
     }
   }, [socket, username]);
 
   useEffect(() => {
     if (socket) {
-      // Listening for incoming messages from the server
-      socket.on('message', (message) => {
-        setMessages((prevMessages) => [...prevMessages ,message]);
-      });
-
       // Listening for user activity events
       socket.on('userJoined', ({ username }) => {
         // setUserLogin(`${username} joined the chat`);
-        setUserActivity((prevUsers) => [...prevUsers, (`${username} joined the chat`)]);
+        setUserActivity((prevUsers) => [...prevUsers, (username)]);
       });
-
       socket.on('userLeft', ({ username }) => {
-        setUserActivity((prevUsers) => [...prevUsers, (`${username} left the chat`)]);
+        setUserActivity((prevUsers) => [...prevUsers, (username)]);
       });
-
-      socket.on('allUsers', (userList) => {
-        setUserList(userList);
-      });
-  
     }
   }, [socket]);
 
@@ -82,15 +70,6 @@ const ChatPage = () => {
       <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} />
       <button onClick={handleMessageSend}>Send</button>
       <p>Logged in as: {username}</p>
-
-      <div>
-      <h2>Online Users</h2>
-        
-          {userList.map((user, index) => (
-           <span key={index}>{user.username}</span>
-          ))}
-        
-      </div>
      
     </div>
   );
