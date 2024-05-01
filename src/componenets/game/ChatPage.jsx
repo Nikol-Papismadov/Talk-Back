@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+
 
 const ChatPage = () => {
   const [socket, setSocket] = useState(null);
@@ -10,14 +12,15 @@ const ChatPage = () => {
   const [userActivity, setUserActivity] = useState([]);
   const [userList, setUserList] = useState([]);
 
+
+
   const location = useLocation();
-  const { username } = location.state;
+  const { username} = location.state;
 
   useEffect(() => {
     // Establishing connection to the server
     const newSocket = io('http://localhost:3001');
     setSocket(newSocket);
-
     // Clean up function
     return () => newSocket.close();
   }, []);
@@ -44,14 +47,17 @@ const ChatPage = () => {
 
       socket.on('userLeft', ({ username }) => {
         setUserActivity((prevUsers) => [...prevUsers, (`${username} left the chat`)]);
+
       });
 
-      socket.on('allUsers', (userList) => {
+      socket.on('activeUsers', (userList) => {
         setUserList(userList);
+
       });
   
     }
   }, [socket]);
+
 
   const handleMessageSend = () => {
     if (inputMessage.trim() !== '') {
@@ -60,7 +66,7 @@ const ChatPage = () => {
       setInputMessage('');
     }
   };
-
+debugger
   return (
     <div>
 {/* Displaying users who joined and left */}
@@ -83,14 +89,18 @@ const ChatPage = () => {
       <button onClick={handleMessageSend}>Send</button>
       <p>Logged in as: {username}</p>
 
+     
       <div>
+        {/* <NavLink to="/onlineUsers">Online Users</NavLink> */}
       <h2>Online Users</h2>
-        
+        <ul>
           {userList.map((user, index) => (
-           <span key={index}>{user.username}</span>
+            <li key={index}>{user}</li>
           ))}
+          </ul>
         
-      </div>
+          </div>
+      
      
     </div>
   );

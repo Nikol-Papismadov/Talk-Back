@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Login from './authentication/Login';
-import Chat from './game/ChatPage';
+import Login from './componenets/authentication/Login';
+import Chat from './componenets/game/ChatPage';
 
 const Home = () => {
   const [username, setUsername] = useState('');

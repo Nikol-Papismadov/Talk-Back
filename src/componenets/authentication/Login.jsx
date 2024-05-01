@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { isLoggedIn } from '../../services/Recoil';
+import { isLoggedIn } from '../game/services/Recoil';
 //import jwt from 'jsonwebtoken';
 
 function Login({ lastLoggedInUsername }) {
@@ -13,20 +13,20 @@ function Login({ lastLoggedInUsername }) {
     password: '',
   });
 
-  const validateToken = async (username, accessToken, refreshToken) => {
-    debugger
-    // if (jwt.verify(accessToken)) {
-    //     return true;
-    // }
-    const response = await fetch('http://localhost:5000/api/auth/RefreshToken/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({username: username, token: refreshToken})
-  });
-  return response.data;
-}
+//   const validateToken = async (username, accessToken, refreshToken) => {
+    
+//     // if (jwt.verify(accessToken)) {
+//     //     return true;
+//     // }
+//     const response = await fetch('http://localhost:5000/api/auth/RefreshToken/', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({username: username, token: refreshToken})
+//   });
+//   return response.data;
+// }
   const getOnlineUsers = async () => {
     debugger
     const onlineUsers = await fetch('http://localhost:3000/online-users', {
@@ -44,6 +44,7 @@ function Login({ lastLoggedInUsername }) {
       [e.target.name]: e.target.value
     });
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,16 +60,20 @@ function Login({ lastLoggedInUsername }) {
       if (!response.ok) {
         throw new Error('login failed');
       }
-      debugger
+      
       const data = await response.json();
-      validateToken(formData.username, data.accessToken, data.refreshToken);
+      // validateToken(formData.username, data.accessToken, data.refreshToken);
       getOnlineUsers();
       const { username } = formData;
 
       setIsUserLoggedIn(true);
       localStorage.setItem('lastLoggedInUsername', username);
+      // localStorage.setItem('username', username);
+      
 
-      navigate('/chat', { state: { username ,accessToken, refreshToken} }); // Redirect to chat page with username
+
+     navigate('/onlineUsers', { state: { username } }); // Redirect to chat page with username
+      // navigate('/chat' );
 
     } catch (error) {
       console.error('Error logging in user:', error);
