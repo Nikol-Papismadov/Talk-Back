@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
-import { NavLink } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 
 
 const ChatPage = () => {
@@ -13,9 +14,8 @@ const ChatPage = () => {
   const [userList, setUserList] = useState([]);
 
 
+  const username = localStorage.getItem('username');
 
-  const location = useLocation();
-  const { username} = location.state;
 
   useEffect(() => {
     // Establishing connection to the server
@@ -66,7 +66,7 @@ const ChatPage = () => {
       setInputMessage('');
     }
   };
-debugger
+
   return (
     <div>
 {/* Displaying users who joined and left */}
@@ -99,6 +99,11 @@ debugger
           ))}
           </ul>
         
+          </div>
+          <div>
+            <button>
+              <Link to="/onlineUsers">Online Users</Link>
+            </button>
           </div>
       
      

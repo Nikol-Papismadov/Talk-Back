@@ -7,11 +7,14 @@ import Home from './Home';
 import {useRecoilState} from 'recoil';
 import ChatPage from './componenets/game/ChatPage';
 import OnlineUsers from './componenets/game/OnlineUsersPage';
+import NavigationPage from './componenets/game/NavigationPage';
+import OnlineUsersPage from './componenets/game/OnlineUsersPage';
 
 
 function App() {
   
   return (
+    <>
     <Router>
       <div className="App">
         <Routes>
@@ -20,10 +23,14 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/onlineUsers" element={<OnlineUsers />} />
-
+          <Route path="/navPage" element={<NavigationPage />} />
         </Routes>
       </div>
     </Router>
+
+    {/* <OnlineUsersPage username={username}/> 
+    <ChatPage visible={false}/> */}
+    </>
   );
 }
 

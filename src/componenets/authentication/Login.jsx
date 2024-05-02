@@ -1,12 +1,11 @@
 // Login.jsx
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { isLoggedIn } from '../game/services/Recoil';
 //import jwt from 'jsonwebtoken';
 
 function Login({ lastLoggedInUsername }) {
-  const navigate = useNavigate();
   const [isUserLoggedIn, setIsUserLoggedIn] = useRecoilState(isLoggedIn);
   const [formData, setFormData] = useState({
     username: lastLoggedInUsername || '',
@@ -43,6 +42,7 @@ function Login({ lastLoggedInUsername }) {
       ...formData,
       [e.target.name]: e.target.value
     });
+    localStorage.setItem('username', formData.username);
   };
   
 
@@ -72,8 +72,8 @@ function Login({ lastLoggedInUsername }) {
       
 
 
-     navigate('/onlineUsers', { state: { username } }); // Redirect to chat page with username
-      // navigate('/chat' );
+    //  navigate('/navPage', { state: { username } }); // Redirect to chat page with username
+      
 
     } catch (error) {
       console.error('Error logging in user:', error);
@@ -113,6 +113,7 @@ function Login({ lastLoggedInUsername }) {
       <button>
         <Link to="/register">Register</Link>
       </button>
+     
     </div>
   );
 }

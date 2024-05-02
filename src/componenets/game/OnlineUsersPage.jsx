@@ -5,16 +5,19 @@ import { useLocation } from 'react-router-dom';
 import { Link, useNavigate } from 'react-router-dom';
 
 
-const OnlineUsersPage = () => {
+const OnlineUsersPage = ({username}) => {
   const navigate = useNavigate();
-
+  
   const [socket, setSocket] = useState(null);
-  const [userList, setUserList] = useState([]);
-
-
-
-  const location = useLocation();
-  const { username} = location.state;
+  const [onlineUserList, setOnlineUserList] = useState([]);
+  const [offlineUserList, setofflineUserList] = useState([]);
+  
+  
+  
+  
+  // const location = useLocation();
+  // const username = localStorage.getItem('username');
+  // const { username} = location.state;
 
   useEffect(() => {
     // Establishing connection to the server
@@ -34,19 +37,18 @@ const OnlineUsersPage = () => {
   useEffect(() => {
     if (socket) {
       // Listening for incoming messages from the server
-    
-
-      socket.on('activeUsers', (userList) => {
-        setUserList(userList);
-
+      socket.on('activeUsers', (onlineUserList) => {
+        setOnlineUserList(onlineUserList);
       });
-  
+
+      
+      socket.on('offlineUsers', (offlineUserList) => {
+        setofflineUserList(offlineUserList);
+      });
     }
   }, [socket]);
 
-  const handleNavigateToChat = () => {
-    navigate('/chat', { state: { username } });
-  };  
+   
 
   return (
     
@@ -54,14 +56,21 @@ const OnlineUsersPage = () => {
         {/* <NavLink to="/onlineUsers">Online Users</NavLink> */}
       <h2>Online Users</h2>
         <ul>
-          {userList.map((user, index) => (
+          {onlineUserList.map((user, index) => (
             <li key={index}>{user}</li>
           ))}
           </ul>
-        
+        <div>
+        <h2>offline Users</h2>
+        <ul>
+          {offlineUserList.map((user, index) => (
+            <li key={index}>{user}</li>
+          ))}
+          </ul>
+        </div>
       <div>
-      <button onClick={handleNavigateToChat}>
-        Chat
+      <button>
+        <link to="/chat">Chat</link>
       </button>
       </div>
           </div>
