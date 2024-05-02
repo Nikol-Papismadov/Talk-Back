@@ -8,33 +8,38 @@ import { isLoggedIn } from '../game/services/Recoil';
 function Login({ lastLoggedInUsername }) {
   const [isUserLoggedIn, setIsUserLoggedIn] = useRecoilState(isLoggedIn);
   const [formData, setFormData] = useState({
-    username: lastLoggedInUsername || '',
+    username: '',
     password: '',
   });
 
-//   const validateToken = async (username, accessToken, refreshToken) => {
-    
-//     // if (jwt.verify(accessToken)) {
-//     //     return true;
-//     // }
-//     const response = await fetch('http://localhost:5000/api/auth/RefreshToken/', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({username: username, token: refreshToken})
-//   });
-//   return response.data;
-// }
-  const getOnlineUsers = async () => {
+  const validateToken = async (username, accessToken, refreshToken) => {
     debugger
-    const onlineUsers = await fetch('http://localhost:3000/online-users', {
-        method: 'POST',
+    const isTokenvalid = await fetch('http://localhost:5000/api/auth/validateToken/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({token: accessToken})
+    });
+    if (isTokenvalid) return isTokenvalid
+    const onlineUsers = await getOnlineUsers()
+    const response = await fetch('http://localhost:5000/api/auth/refreshToken/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({tusername: username, token: refreshToken, users: onlineUsers})
+  });
+  return response.body;
+}
+  const getOnlineUsers = async () => {
+    const onlineUsers = await fetch('http://localhost:3001/online-users', {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
     });
-    return onlineUsers;
+    return onlineUsers.json();
 }
 
   const handleChange = (e) => {
@@ -49,6 +54,7 @@ function Login({ lastLoggedInUsername }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      debugger;
       const response = await fetch('http://localhost:5000/api/auth/login/', {
         method: 'POST',
         headers: {
@@ -62,20 +68,15 @@ function Login({ lastLoggedInUsername }) {
       }
       
       const data = await response.json();
-      // validateToken(formData.username, data.accessToken, data.refreshToken);
-      getOnlineUsers();
-      const { username } = formData;
+      console.log(data);
+      debugger
+      sessionStorage.setItem('accessToken', JSON.stringify(data.accessToken));
+      sessionStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
+      sessionStorage.setItem('username', formData.username);
+      navigate('/OnlineUsers', { state: { username, accessToken, refreshToken} });
 
-      setIsUserLoggedIn(true);
-      localStorage.setItem('lastLoggedInUsername', username);
-      // localStorage.setItem('username', username);
-      
-
-
-    //  navigate('/navPage', { state: { username } }); // Redirect to chat page with username
-      
-
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Error logging in user:', error);
       alert('Login failed. Please try again.');
     }
