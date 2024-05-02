@@ -10,17 +10,22 @@ import OnlineUsersPage from './componenets/game/OnlineUsersPage';
 
 
 function App() {
-  
+  const user = {
+    username:sessionStorage.getItem("username"),
+    accessToken:sessionStorage.getItem("accessToken"), 
+    refreshToken:sessionStorage.getItem("refreshToken")
+  };
   return (
     <>
     <Router>
       <div className="App">
         <Routes>
-          <Route  path="/" element={<Login />} />
+          <Route  path="/" element={user ? <Home /> : <Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/chat" element={<ChatPage />} />
-          <Route path="/onlineUsers" element={<OnlineUsersPage />} />
+          <Route path="/home" element={user? <Home /> : <Login />} />
+          {/* <Route path="/chat" element={<ChatPage />} />
+          <Route path="/onlineUsers" element={<OnlineUsersPage />} /> */}
         </Routes>
       </div>
     </Router>
