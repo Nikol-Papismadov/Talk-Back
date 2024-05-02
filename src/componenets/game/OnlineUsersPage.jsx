@@ -1,13 +1,11 @@
 // ChatPage.jsx
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import { useLocation } from 'react-router-dom';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 // import {validateToken} from '../authentication/Login';
 
 
-const OnlineUsersPage = async () => {
-  const navigate = useNavigate();
+const OnlineUsersPage =  () => {
   
   const [socket, setSocket] = useState(null);
   const [onlineUserList, setOnlineUserList] = useState([]);
@@ -16,9 +14,7 @@ const OnlineUsersPage = async () => {
   
   // await validateToken(username, accessToken, refreshToken);
   
-  const location = useLocation();
-  // const username = localStorage.getItem('username');
-  const { username} = location.state;
+  const username = sessionStorage.getItem("username");
 
   useEffect(() => {
     // Establishing connection to the server
@@ -61,17 +57,17 @@ const OnlineUsersPage = async () => {
             <li key={index}>{user}</li>
           ))}
           </ul>
-        <div>
+        {/* <div>
         <h2>offline Users</h2>
         <ul>
           {offlineUserList.map((user, index) => (
             <li key={index}>{user}</li>
           ))}
           </ul>
-        </div>
+        </div> */}
       <div>
       <button>
-        <link to="/chat">Chat</link>
+        <Link to="/chat">Chat</Link>
       </button>
       </div>
           </div>

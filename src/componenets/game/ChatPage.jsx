@@ -1,8 +1,7 @@
 // ChatPage.jsx
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import { useLocation } from 'react-router-dom';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 
@@ -14,7 +13,7 @@ const ChatPage = () => {
   const [userList, setUserList] = useState([]);
 
 
-  const username = localStorage.getItem('username');
+  const username = sessionStorage.getItem('username');
 
 
   useEffect(() => {

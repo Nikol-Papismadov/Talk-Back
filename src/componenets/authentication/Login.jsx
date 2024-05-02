@@ -47,7 +47,6 @@ function Login({ lastLoggedInUsername }) {
       ...formData,
       [e.target.name]: e.target.value
     });
-    localStorage.setItem('username', formData.username);
   };
   
 
@@ -72,8 +71,7 @@ function Login({ lastLoggedInUsername }) {
       debugger
       sessionStorage.setItem('accessToken', JSON.stringify(data.accessToken));
       sessionStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
-      sessionStorage.setItem('username', formData.username);
-      navigate('/OnlineUsers', { state: { username, accessToken, refreshToken} });
+      sessionStorage.setItem("username", formData.username);
 
     } 
     catch (error) {
@@ -107,7 +105,9 @@ function Login({ lastLoggedInUsername }) {
           />
         </div>
         
-        <button type="submit">Login</button>
+        <button type="submit">
+          <Link to="/onlineUsers">Login</Link>
+          </button>
         
       </form>
       <div>Create new account</div>
