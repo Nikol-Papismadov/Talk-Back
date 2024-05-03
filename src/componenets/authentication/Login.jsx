@@ -1,16 +1,18 @@
 // Login.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { isLoggedIn } from '../game/services/Recoil';
 //import jwt from 'jsonwebtoken';
 
 function Login({ lastLoggedInUsername }) {
+  const navigate=useNavigate();
   const [isUserLoggedIn, setIsUserLoggedIn] = useRecoilState(isLoggedIn);
   const [formData, setFormData] = useState({
-    username: '',
+    username: lastLoggedInUsername ||'',
     password: '',
   });
+  
 
   const validateToken = async (username, accessToken, refreshToken) => {
     debugger
@@ -40,8 +42,8 @@ function Login({ lastLoggedInUsername }) {
         }
     });
     return onlineUsers.json();
-}
-
+  }
+  
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -49,7 +51,7 @@ function Login({ lastLoggedInUsername }) {
     });
   };
   
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -61,27 +63,28 @@ function Login({ lastLoggedInUsername }) {
         },
         body: JSON.stringify(formData)
       });
-
+      
       if (!response.ok) {
         throw new Error('login failed');
       }
       
       const data = await response.json();
       console.log(data);
-      debugger
+      
       sessionStorage.setItem('accessToken', JSON.stringify(data.accessToken));
       sessionStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
       sessionStorage.setItem("username", formData.username);
-
+      navigate('/home');
+      window.location.reload();
     } 
     catch (error) {
       console.error('Error logging in user:', error);
       alert('Login failed. Please try again.');
     }
   };
-
+  
   return (
-    <div>
+    <div className='login-container'>
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -92,7 +95,7 @@ function Login({ lastLoggedInUsername }) {
             value={formData.username}
             onChange={handleChange}
             required
-          />
+            />
         </div>
         <div>
           <label>Password:</label>
@@ -105,10 +108,7 @@ function Login({ lastLoggedInUsername }) {
           />
         </div>
         
-        <button type="submit">
-          <Link to="/onlineUsers">Login</Link>
-          </button>
-        
+        <button type="submit">Login</button>
       </form>
       <div>Create new account</div>
       <button>

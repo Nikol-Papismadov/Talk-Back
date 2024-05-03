@@ -10,12 +10,16 @@ const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [userActivity, setUserActivity] = useState([]);
-  const [userList, setUserList] = useState([]);
-
-
+  // const [userList, setUserList] = useState([]);
+  
+  
   const username = sessionStorage.getItem('username');
+  
+
+  
 
 
+  
   useEffect(() => {
     // Establishing connection to the server
     const newSocket = io('http://localhost:3001');
@@ -32,32 +36,40 @@ const ChatPage = () => {
   }, [socket, username]);
 
   useEffect(() => {
+    debugger
     if (socket) {
       // Listening for incoming messages from the server
       socket.on('message', (message) => {
         setMessages((prevMessages) => [...prevMessages ,message]);
       });
-
+      
       // Listening for user activity events
       socket.on('userJoined', ({ username }) => {
         // setUserLogin(`${username} joined the chat`);
+        
         setUserActivity((prevUsers) => [...prevUsers, (`${username} joined the chat`)]);
       });
-
+      
       socket.on('userLeft', ({ username }) => {
         setUserActivity((prevUsers) => [...prevUsers, (`${username} left the chat`)]);
 
       });
-
+      
+     
       socket.on('activeUsers', (userList) => {
-        setUserList(userList);
-
+        // setUserList(userList);
+        sessionStorage.setItem('onlineUserList', JSON.stringify(userList));
       });
-  
+      socket.on('offlineUsers', (userList) => {
+        // setUserList(userList);
+        sessionStorage.setItem('offlineUserList', JSON.stringify(userList));
+      });
+      
+      
     }
   }, [socket]);
 
-
+  
   const handleMessageSend = () => {
     if (inputMessage.trim() !== '') {
       // Emitting a message to the server
@@ -89,8 +101,8 @@ const ChatPage = () => {
       <p>Logged in as: {username}</p>
 
      
-      <div>
-        {/* <NavLink to="/onlineUsers">Online Users</NavLink> */}
+      {/* <div> */}
+        {/* <NavLink to="/onlineUsers">Online Users</NavLink>
       <h2>Online Users</h2>
         <ul>
           {userList.map((user, index) => (
@@ -98,13 +110,8 @@ const ChatPage = () => {
           ))}
           </ul>
         
-          </div>
-          <div>
-            <button>
-              <Link to="/onlineUsers">Online Users</Link>
-            </button>
-          </div>
-      
+          </div> */}
+          
      
     </div>
   );
