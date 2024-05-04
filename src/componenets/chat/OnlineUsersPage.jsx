@@ -2,11 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { Link } from 'react-router-dom';
+import ChatPage from './ChatPage';
 // import {validateToken} from '../authentication/Login';
 
 const OnlineUsersPage =  () => {
   const[onlineUserlist, setOnlineUserList] = useState([]);
   const[offlineUserList, setOfflineUserList] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(()=>{
     let timer = setInterval(() => {
@@ -15,31 +17,32 @@ const OnlineUsersPage =  () => {
       
     });
     return () => clearInterval(timer);
-  })
+  },[]);
 
-
-
-
-
-  
-
+  const handleOpenChat = (user) => {
+    setSelectedUser(user);
+  }
   return (
       <div>
-      <h2>Online Users</h2>
+        <h2>Online Users</h2>
         <ul>
-          {onlineUserlist.map((user, index) => (
-            <li key={index}>{user}</li>
+          {onlineUserList.map((user, index) => (
+            <li key={index}>
+              {user}
+              <button onClick={() => handleOpenChat(user)}>Chat</button>
+            </li>
           ))}
-          </ul>
+        </ul>
         <div>
-        <h2>offline Users</h2>
-        <ul>
-          {offlineUserList.map((user, index) => (
-            <li key={index}>{user}</li>
-          ))}
+          <h2>offline Users</h2>
+          <ul>
+            {offlineUserList.map((user, index) => (
+              <li key={index}>{user}</li>
+            ))}
           </ul>
         </div>
-          </div>
+        {selectedUser && <ChatPage user={selectedUser} />}
+      </div>
      
     
   );

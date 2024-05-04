@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 
 
-const ChatPage = () => {
+const ChatPage = ({user}) => {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -14,11 +14,6 @@ const ChatPage = () => {
   
   
   const username = sessionStorage.getItem('username');
-  
-
-  
-
-
   
   useEffect(() => {
     // Establishing connection to the server
@@ -36,7 +31,6 @@ const ChatPage = () => {
   }, [socket, username]);
 
   useEffect(() => {
-    debugger
     if (socket) {
       // Listening for incoming messages from the server
       socket.on('message', (message) => {
@@ -79,41 +73,29 @@ const ChatPage = () => {
   };
 
   return (
+    user ?
     <div>
-{/* Displaying users who joined and left */}
-<div>
+      <div>
         {userActivity.map((user, index) => (
           <div key={index}>{user}</div>
         ))}
       </div>
      
       <div>
-      {messages.map((msg, index) => (
-    <div key={index}>
-      <span style={{ fontWeight: 'bold' }}>{msg.username}: </span>
-      {msg.message}
-    </div>
+        {messages.map((msg, index) => (
+          <div key={index}>
+            <span style={{ fontWeight: 'bold' }}>{msg.username}: </span>
+            {msg.message}
+          </div>
         ))}
                
       </div>
       <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} />
       <button onClick={handleMessageSend}>Send</button>
       <p>Logged in as: {username}</p>
-
-     
-      {/* <div> */}
-        {/* <NavLink to="/onlineUsers">Online Users</NavLink>
-      <h2>Online Users</h2>
-        <ul>
-          {userList.map((user, index) => (
-            <li key={index}>{user}</li>
-          ))}
-          </ul>
-        
-          </div> */}
-          
      
     </div>
+    : <></>
   );
 };
 
