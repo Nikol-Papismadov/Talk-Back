@@ -19,7 +19,7 @@ const Home = () => {
     <div>
      <Game></Game> 
      <OnlineUsersPage></OnlineUsersPage>
-     <ChatPage></ChatPage>
+      <ChatPage></ChatPage> 
      <Logout></Logout>
     </div>
   );

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 
 
-const ChatPage = () => {
+const ChatPage = ({user}) => {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
@@ -14,11 +14,6 @@ const ChatPage = () => {
   
   
   const username = sessionStorage.getItem('username');
-  
-
-  
-
-
   
   useEffect(() => {
     // Establishing connection to the server
@@ -36,7 +31,6 @@ const ChatPage = () => {
   }, [socket, username]);
 
   useEffect(() => {
-    debugger
     if (socket) {
       // Listening for incoming messages from the server
       socket.on('message', (message) => {

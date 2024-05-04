@@ -7,42 +7,11 @@ import { isLoggedIn } from '../game/services/Recoil';
 
 function Login({ lastLoggedInUsername }) {
   const navigate=useNavigate();
-  const [isUserLoggedIn, setIsUserLoggedIn] = useRecoilState(isLoggedIn);
   const [formData, setFormData] = useState({
     username: lastLoggedInUsername ||'',
     password: '',
   });
   
-
-  const validateToken = async (username, accessToken, refreshToken) => {
-    debugger
-    const isTokenvalid = await fetch('http://localhost:5000/api/auth/validateToken/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({token: accessToken})
-    });
-    if (isTokenvalid) return isTokenvalid
-    const onlineUsers = await getOnlineUsers()
-    const response = await fetch('http://localhost:5000/api/auth/refreshToken/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({tusername: username, token: refreshToken, users: onlineUsers})
-  });
-  return response.body;
-}
-  const getOnlineUsers = async () => {
-    const onlineUsers = await fetch('http://localhost:3001/online-users', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-    });
-    return onlineUsers.json();
-  }
   
   const handleChange = (e) => {
     setFormData({
