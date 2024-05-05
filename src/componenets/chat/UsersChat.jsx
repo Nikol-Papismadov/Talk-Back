@@ -1,19 +1,16 @@
-// ChatPage.jsx
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import { Link } from 'react-router-dom';
+import { Link, json } from 'react-router-dom';
 
 
-
-const ChatPage = ({user}) => {
+const Chat = ({user}) => {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [userActivity, setUserActivity] = useState([]);
-  // const [userList, setUserList] = useState([]);
-  
-  
   const username = sessionStorage.getItem('username');
+
+  
   
   useEffect(() => {
     // Establishing connection to the server
@@ -31,35 +28,13 @@ const ChatPage = ({user}) => {
   }, [socket, username]);
 
   useEffect(() => {
-    debugger
     if (socket) {
-      // Listening for incoming messages from the server
       socket.on('message', (message) => {
-        setMessages((prevMessages) => [...prevMessages ,(`${message.sender}: ${message.message}`)]);
+        setMessages((prevMessages) => [...prevMessages ,message]);
       });
-     
-      // Listening for user activity events
-      socket.on('userJoined', ({ username }) => {
-        
-        setUserActivity((prevUsers) => [...prevUsers, (`${username} joined the chat`)]);
-      });
-      
-      socket.on('userLeft', ({ username }) => {
-        setUserActivity((prevUsers) => [...prevUsers, (`${username} left the chat`)]);
+      setUserActivity((prevUsers) => [...prevUsers, (`${username} joined the chat`)]);
+      setUserActivity((prevUsers) => [...prevUsers, (`${username} left the chat`)]);
 
-      });
-      
-     
-      socket.on('activeUsers', (userList) => {
-        // setUserList(userList);
-        sessionStorage.setItem('onlineUserList', JSON.stringify(userList));
-      });
-      socket.on('offlineUsers', (userList) => {
-        // setUserList(userList);
-        sessionStorage.setItem('offlineUserList', JSON.stringify(userList));
-      });
-      
-    
     }
   }, [socket]);
 
@@ -69,11 +44,12 @@ const ChatPage = ({user}) => {
       // Emitting a message to the server
       socket.emit('ChatMessage',inputMessage);
       setInputMessage('');
+
     }
   };
 
   return (
-    user?
+    user ?
     <div>
       <div>
         {userActivity.map((user, index) => (
@@ -95,8 +71,8 @@ const ChatPage = ({user}) => {
       <p>Logged in as: {username}</p>
      
     </div>
-   :<></>
-  );
-};
+    : <></>
+  )
+}
 
-export default ChatPage;
+export default Chat

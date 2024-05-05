@@ -1,4 +1,3 @@
-// ChatPage.jsx
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { Link } from 'react-router-dom';
@@ -8,7 +7,7 @@ import ChatPage from './ChatPage';
 const OnlineUsersPage =  () => {
   const[onlineUserlist, setOnlineUserList] = useState([]);
   const[offlineUserList, setOfflineUserList] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState('');
 
   useEffect(()=>{
     let timer = setInterval(() => {
@@ -33,6 +32,7 @@ const OnlineUsersPage =  () => {
               
             </li>
           ))}
+          {selectedUser && <ChatPage user={selectedUser} />}
         </ul>
         <div>
           <h2>offline Users</h2>
@@ -42,7 +42,6 @@ const OnlineUsersPage =  () => {
             ))}
           </ul>
         </div>
-        {selectedUser && <ChatPage user={selectedUser} />}
       </div>
      
     
@@ -50,6 +49,3 @@ const OnlineUsersPage =  () => {
 };
 
 export default OnlineUsersPage;
-{/* <button></button>
-<button onClick></button>
-<ChatPage visible={false} ></ChatPage> */}
