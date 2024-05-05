@@ -26,7 +26,7 @@ const OnlineUsersPage =  () => {
       <div>
         <h2>Online Users</h2>
         <ul>
-          {onlineUserList.map((user, index) => (
+          {onlineUserlist.map((user, index) => (
             <li key={index}>
               {user}
               <button onClick={() => handleOpenChat(user)}>Chat</button>
