@@ -30,6 +30,7 @@ const OnlineUsersPage =  () => {
             <li key={index}>
               {user}
               <button onClick={() => handleOpenChat(user)}>Chat</button>
+              
             </li>
           ))}
         </ul>

@@ -4,6 +4,7 @@ import OnlineUsersPage from './componenets/chat/OnlineUsersPage';
 import Game from './componenets/game/Game';
 import { Link, useNavigate } from 'react-router-dom';
 import Logout from './componenets/authentication/Logout';
+import OnlineUsers from './componenets/onlineUsers/OnlineUsers';
 
 const Home = () => {
   // const navigate = useNavigate();
@@ -17,10 +18,11 @@ const Home = () => {
 
   return (
     <div>
-     <Game></Game> 
-     <OnlineUsersPage></OnlineUsersPage>
-      <ChatPage></ChatPage> 
-     <Logout></Logout>
+      <Game></Game> 
+      <OnlineUsers/>
+      {/* <OnlineUsersPage></OnlineUsersPage>
+      <ChatPage></ChatPage>  */}
+      <Logout></Logout>
     </div>
   );
 };

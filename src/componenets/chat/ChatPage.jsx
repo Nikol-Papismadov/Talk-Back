@@ -34,7 +34,7 @@ const ChatPage = ({user}) => {
     if (socket) {
       // Listening for incoming messages from the server
       socket.on('message', (message) => {
-        setMessages((prevMessages) => [...prevMessages ,message]);
+        setMessages((prevMessages) => [...prevMessages ,(`${message.sender}: ${message.message}`)]);
       });
       
       // Listening for user activity events
