@@ -17,7 +17,7 @@ const Logout = () => {
     sessionStorage.removeItem('accessToken');
     sessionStorage.removeItem('refreshToken');
     window.location.reload();
-};
+  };
 
 
   return (
