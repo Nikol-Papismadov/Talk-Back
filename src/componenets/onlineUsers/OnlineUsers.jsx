@@ -9,6 +9,8 @@ const OnlineUsers = () => {
     const[onlineUserlist, setOnlineUserList] = useState([]);
     const[offlineUserList, setOfflineUserList] = useState([]);
 
+    const [visibleChat, setVisibleChat] = useState({});
+
     useEffect(() => {
         const newSocket = io('http://localhost:3002');
         setSocket(newSocket);
@@ -23,30 +25,36 @@ const OnlineUsers = () => {
     }, [socket, username]);
 
     useEffect(() => {
-        if (socket) {
-          socket.on('updateActiveUsers', (userList) => {
-            setOnlineUserList(userList);
-            sessionStorage.setItem('onlineUserList', JSON.stringify(userList));
-            // setOnlineUserList(JSON.parse(sessionStorage.getItem('onlineUserList')));
-          });
-          socket.on('updateOfflineUsers', (userList) => {
-            setOfflineUserList(userList);
-            sessionStorage.setItem('offlineUserList', JSON.stringify(userList));
-          });
-        }
-      }, [socket]);
+      if (socket) {
+        socket.on('updateActiveUsers', (userList) => {
+          setOnlineUserList(userList);
+          sessionStorage.setItem('onlineUserList', JSON.stringify(userList));
+        });
+        socket.on('updateOfflineUsers', (userList) => {
+          setOfflineUserList(userList);
+          sessionStorage.setItem('offlineUserList', JSON.stringify(userList));
+        });
+      }
+    }, [socket]);
     
+    const handleOpenChat = (user) => {
+      setVisibleChat(prevState => ({
+          ...prevState,
+          [user]: !prevState[user] // Toggle the visibility of chat for the user
+      }));
+  };
 
   return (
     <div>
         <div>
             <h2>Online Users</h2>
             <ul>
-                {onlineUserlist.map((user, index) => (
+                  {onlineUserlist.filter(user => user !== username).map((user, index) => (
+                    
                     <li key={index}>
-                        {user}
-                        <button>Chat</button>
-                        <Chat sender={username} reciever={user}></Chat>
+                      {user}
+                      <button onClick={() => handleOpenChat(user)}>Chat</button>
+                      {visibleChat[user] && <Chat sender={username} receiver={user}></Chat>}
                     </li>
                 ))}
             </ul>
@@ -55,7 +63,7 @@ const OnlineUsers = () => {
            <h2>Offline Users</h2>
            <ul>
                 {offlineUserList.map((user, index) => (
-                    <li key={index}>{user}</li>
+                  <li key={index}>{user}</li>
                 ))}
           </ul>
         </div>

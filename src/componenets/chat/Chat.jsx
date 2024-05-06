@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
-const Chat = ({sender, reciever}) => {
+const Chat = ({sender, receiver}) => {
     const [socket, setSocket] = useState(null);
     const [inputMessage, setInputMessage] = useState('');
     const [history, setHistory] = useState([]);
+
     const privateRoomString = () =>{
-        const concatenatedString = sender + reciever;
+        const concatenatedString = sender + receiver;
         const lowercaseString = concatenatedString.toLowerCase();
         const sortedString = lowercaseString.split('').sort().join('');
         return sortedString;
@@ -22,7 +23,7 @@ const Chat = ({sender, reciever}) => {
 
     useEffect(() => {
         if (socket) {
-          socket.emit('join', room);
+          socket.emit('join', room, sender);
         }
     }, [socket, room]);
 
@@ -33,20 +34,20 @@ const Chat = ({sender, reciever}) => {
                 setHistory((prevHistory) => [...prevHistory ,(`${sender}: ${message}`)]);
             });
 
-            socket.on('userJoined', ({ username }) => {
+            socket.on('userJoined', ( username ) => {
                 setHistory((prevHistory) => [...prevHistory, (`${username} joined the chat`)]);
             });
             
-            socket.on('userLeft', ({ username }) => {
+            socket.on('userLeft', ( username ) => {
                 setHistory((prevHistory) => [...prevHistory, (`${username} left the chat`)]);
             });
         }
-    }, [socket]);
+    }, [socket, room]);
 
     const handleMessageSend = () => {
         if (inputMessage.trim() !== '') {
             debugger
-          socket.emit('ChatMessage',room, sender, inputMessage);
+          socket.emit('chatMessage',{room, sender, message: inputMessage});
           setInputMessage('');
         }
       };
