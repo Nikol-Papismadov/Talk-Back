@@ -62,7 +62,7 @@ const OnlineUsers = () => {
         <div>
            <h2>Offline Users</h2>
            <ul>
-                {offlineUserList.map((user, index) => (
+                {offlineUserList.filter(user => user =! '').map((user, index) => (
                   <li key={index}>{user}</li>
                 ))}
           </ul>
