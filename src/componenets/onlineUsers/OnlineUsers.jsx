@@ -10,6 +10,18 @@ const OnlineUsers = () => {
     const[offlineUserList, setOfflineUserList] = useState([]);
 
     const [visibleChat, setVisibleChat] = useState({});
+ 
+    useEffect(() => {
+      if (socket) {
+        socket.on('updateActiveUsers', (userList) => {
+          const visibilityObj = {};
+          userList.forEach(user => {
+            visibilityObj[user] = false;
+          });
+          setVisibleChat(visibilityObj);
+        });
+      }
+    }, [socket]);
 
     useEffect(() => {
         const newSocket = io('http://localhost:3002');
@@ -26,9 +38,17 @@ const OnlineUsers = () => {
 
     useEffect(() => {
       if (socket) {
+        socket.on('UserJoined', (username) => {
+          alert(`${username} is now online`);
+        })
+
+        socket.on('UserLeft', (username) => {
+          alert(`${username} is now offline`);
+        })
         socket.on('updateActiveUsers', (userList) => {
           setOnlineUserList(userList);
           sessionStorage.setItem('onlineUserList', JSON.stringify(userList));
+          
         });
         socket.on('updateOfflineUsers', (userList) => {
           setOfflineUserList(userList);
@@ -39,10 +59,11 @@ const OnlineUsers = () => {
     
     const handleOpenChat = (user) => {
       setVisibleChat(prevState => ({
-          ...prevState,
-          [user]: !prevState[user] // Toggle the visibility of chat for the user
-      }));
+        ...prevState,
+        [user]: !prevState[user]
+    }));
   };
+
 
   return (
     <div>
@@ -54,7 +75,7 @@ const OnlineUsers = () => {
                     <li key={index}>
                       {user}
                       <button onClick={() => handleOpenChat(user)}>Chat</button>
-                      {visibleChat[user] && <Chat sender={username} receiver={user}></Chat>}
+                      <Chat visibility={visibleChat[user]} sender={username} receiver={user}></Chat>
                     </li>
                 ))}
             </ul>
@@ -62,7 +83,7 @@ const OnlineUsers = () => {
         <div>
            <h2>Offline Users</h2>
            <ul>
-                {offlineUserList.filter(user => user =! '').map((user, index) => (
+                {offlineUserList.filter(user => user !== '').map((user, index) => (
                   <li key={index}>{user}</li>
                 ))}
           </ul>

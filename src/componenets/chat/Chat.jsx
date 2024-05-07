@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
-const Chat = ({sender, receiver}) => {
+const Chat = ({visibility, sender, receiver}) => {
     const [socket, setSocket] = useState(null);
     const [inputMessage, setInputMessage] = useState('');
     const [history, setHistory] = useState([]);
@@ -33,32 +33,38 @@ const Chat = ({sender, receiver}) => {
             socket.on('message', (sender, message) => {
                 setHistory((prevHistory) => [...prevHistory ,(`${sender}: ${message}`)]);
             });
+            socket.on('pendingMessage', (sender) => {
+                alert(`${sender} sent you a new message`);
+            });
 
-            socket.on('userJoined', ( username ) => {
-                setHistory((prevHistory) => [...prevHistory, (`${username} joined the chat`)]);
-            });
+            // socket.on('userJoined', ( username ) => {
+            //     setHistory((prevHistory) => [...prevHistory, (`${username} joined the chat`)]);
+            // });
             
-            socket.on('userLeft', ( username ) => {
-                setHistory((prevHistory) => [...prevHistory, (`${username} left the chat`)]);
-            });
+            // socket.on('userLeft', ( username ) => {
+            //     setHistory((prevHistory) => [...prevHistory, (`${username} left the chat`)]);
+            // });
         }
     }, [socket, room]);
 
     const handleMessageSend = () => {
         if (inputMessage.trim() !== '') {
             debugger
-          socket.emit('chatMessage',{room, sender, message: inputMessage});
+          socket.emit('chatMessage',{room, sender, receiver, message: inputMessage});
           setInputMessage('');
         }
       };
   return (
-    <div>
-        {history.map((event, index) => (
-            <p key={index}>{event}</p>
-        ))}
-        <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} />
-        <button onClick={handleMessageSend}>Send</button>
-    </div>
+    visibility ? (
+        <div>
+            {history.map((event, index) => (
+                <p key={index}>{event}</p>
+            ))}
+            <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} />
+            <button onClick={handleMessageSend}>Send</button>
+        </div>
+        
+    ) : null
   )
 }
 
