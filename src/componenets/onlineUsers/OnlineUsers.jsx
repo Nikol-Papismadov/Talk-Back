@@ -5,7 +5,7 @@ import Game from '../game/Game'
 
 const OnlineUsers = () => {
   const [socket, setSocket] = useState(null);
-  const [gameSocket, setGameSocket] = useState(null);
+  const [gameSocket, setGameSocket] = useState({});
 
   const username = sessionStorage.getItem('username');
   const [opponent, setOpponent] = useState(null)
@@ -14,24 +14,30 @@ const OnlineUsers = () => {
   const[offlineUserList, setOfflineUserList] = useState([]);
   
   const [visibleChat, setVisibleChat] = useState({});
+  const [receiver, setReceiver] = useState(false);
 
   const handleNewGame = (user) => {
     debugger
-    if(gameSocket){
+    if(gameSocket[user]){
       alert('Must leave previous game')
       return;
     }
     else{
         const newGameSocket = io('http://localhost:3001');
-        setGameSocket(newGameSocket);
+        setGameSocket(prevState => ({
+          ...prevState,
+          [user]: newGameSocket
+        }))
         setOpponent(user)
     }};
 ``
 
     useEffect(() => {
       debugger
-      if (gameSocket && opponent && socket) {
-        socket.emit('sentGameRequest', {sender:username, opponent})
+      if (gameSocket[opponent] && opponent && socket) {
+        if(!receiver){
+          socket.emit('sentGameRequest', {sender:username, opponent})
+        }
     }
     },[gameSocket, opponent])
     useEffect(() => {
@@ -79,6 +85,7 @@ const OnlineUsers = () => {
         });
         socket.on('gameRequest', (sender)=>{
           alert(`${sender} sent you a game request`)
+          setReceiver(true);
         })
       }
     }, [socket]);
@@ -104,7 +111,7 @@ const OnlineUsers = () => {
                       <button onClick={() => handleOpenChat(user)}>Chat</button>
                       <Chat visibility={visibleChat[user]} sender={username} receiver={user}></Chat>
                       <button onClick={() => handleNewGame(user)}>New Game</button>
-                      {gameSocket ? <Game socket={gameSocket} user={username} opponent={user}></Game> : null}
+                      {gameSocket[user] ? <Game socket={gameSocket[user]} user={username} opponent={user}></Game> : null}
                     </li>
                 ))}
             </ul>
