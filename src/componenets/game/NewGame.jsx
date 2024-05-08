@@ -2,7 +2,7 @@ import { useState } from "react";
 import GameBoard from "./components/GameBoard";
 import Player from "./components/Player";
 import Log from "./components/Log";
-import { WINNING_COMBINATIONS } from "./winning-combinations.js";
+import { WINNING_COMBINATIONS } from "./winning_combinations.js";
 import GameOver from "./components/GameOver.jsx";
 
 import React from "react";
