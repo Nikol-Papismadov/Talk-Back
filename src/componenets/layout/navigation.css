@@ -1,9 +1,17 @@
 .navigationBar {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+   
 }
 .navigationBar > * {
     margin-right: 20px; /* Adjust as needed */
+}
+.user-options{
+    display: flex  ;
+    align-items: center;
+    justify-content: space-between;
+    
 }
 .user-icon {
     width: 50px;

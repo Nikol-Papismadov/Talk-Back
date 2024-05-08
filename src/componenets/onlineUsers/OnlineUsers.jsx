@@ -1,16 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import Chat from '../chat/Chat';
+import Game from '../game/Game'
 
 const OnlineUsers = () => {
-    const [socket, setSocket] = useState(null);
-    const username = sessionStorage.getItem('username');
+  const [socket, setSocket] = useState(null);
+  const [gameSocket, setGameSocket] = useState(null);
 
-    const[onlineUserlist, setOnlineUserList] = useState([]);
-    const[offlineUserList, setOfflineUserList] = useState([]);
+  const username = sessionStorage.getItem('username');
+  const [opponent, setOpponent] = useState(null)
+  
+  const[onlineUserlist, setOnlineUserList] = useState([]);
+  const[offlineUserList, setOfflineUserList] = useState([]);
+  
+  const [visibleChat, setVisibleChat] = useState({});
 
-    const [visibleChat, setVisibleChat] = useState({});
- 
+  const handleNewGame = (user) => {
+    debugger
+    if(gameSocket){
+      alert('Must leave previous game')
+      return;
+    }
+    else{
+        const newGameSocket = io('http://localhost:3001');
+        setGameSocket(newGameSocket);
+        setOpponent(user)
+    }};
+``
+
+    useEffect(() => {
+      debugger
+      if (gameSocket && opponent && socket) {
+        socket.emit('sentGameRequest', {sender:username, opponent})
+    }
+    },[gameSocket, opponent])
     useEffect(() => {
       if (socket) {
         socket.on('updateActiveUsers', (userList) => {
@@ -54,6 +77,9 @@ const OnlineUsers = () => {
           setOfflineUserList(userList);
           sessionStorage.setItem('offlineUserList', JSON.stringify(userList));
         });
+        socket.on('gameRequest', (sender)=>{
+          alert(`${sender} sent you a game request`)
+        })
       }
     }, [socket]);
     
@@ -61,8 +87,9 @@ const OnlineUsers = () => {
       setVisibleChat(prevState => ({
         ...prevState,
         [user]: !prevState[user]
-    }));
-  };
+      })
+    );
+    };
 
 
   return (
@@ -76,6 +103,8 @@ const OnlineUsers = () => {
                       {user}
                       <button onClick={() => handleOpenChat(user)}>Chat</button>
                       <Chat visibility={visibleChat[user]} sender={username} receiver={user}></Chat>
+                      <button onClick={() => handleNewGame(user)}>New Game</button>
+                      {gameSocket ? <Game socket={gameSocket} user={username} opponent={user}></Game> : null}
                     </li>
                 ))}
             </ul>

@@ -8,7 +8,6 @@ const Home = () => {
   return (
     <div>
       <Navigation></Navigation>
-      <Game></Game> 
       <OnlineUsers/>
     </div>
   );

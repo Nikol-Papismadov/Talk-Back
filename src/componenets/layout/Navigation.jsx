@@ -11,15 +11,17 @@ const Navigation = () => {
   return (
     <div className='navigationBar'>
         <h2>TalkBack</h2>
-        <p>Hello {user}</p>
-        <img className='user-icon' src={userIcon} alt="user-icon" />
-        <button onClick={handleMenuVisibility}>Menu</button>
-        <div style={{display: {MenuVisibility}}}>
-            <ul>
-                <li>Chat Messages</li>
-                <li>Game Requests</li>
-            </ul>
-            <button>Logout</button>
+        <div className='user-options'>
+            <p>Hello {user}</p>
+            <img className='user-icon' src={userIcon} alt="user-icon" />
+            <button onClick={handleMenuVisibility}>Menu</button>
+            <div style={{display: {MenuVisibility}}}>
+                <ul>
+                    <li>Chat Messages</li>
+                    <li>Game Requests</li>
+                </ul>
+                <button>Logout</button>
+            </div>
         </div>
     </div>
   )

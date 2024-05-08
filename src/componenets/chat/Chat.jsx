@@ -28,7 +28,6 @@ const Chat = ({visibility, sender, receiver}) => {
     }, [socket, room]);
 
     useEffect(() => {
-        debugger;
         if (socket) {
             socket.on('message', (sender, message) => {
                 setHistory((prevHistory) => [...prevHistory ,(`${sender}: ${message}`)]);
