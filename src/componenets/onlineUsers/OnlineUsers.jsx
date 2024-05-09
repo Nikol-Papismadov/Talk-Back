@@ -1,132 +1,146 @@
-import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client';
-import Chat from '../chat/Chat';
-import Game from '../game/Game'
+import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
+import Chat from "../chat/Chat";
+import Game from "../game/Game";
+import "./onlineUsers.css";
+import ValidateToken from "../authentication/ValidateToken";
 
 const OnlineUsers = () => {
   const [socket, setSocket] = useState(null);
   const [gameSocket, setGameSocket] = useState({});
 
-  const username = sessionStorage.getItem('username');
-  const [opponent, setOpponent] = useState(null)
-  
-  const[onlineUserlist, setOnlineUserList] = useState([]);
-  const[offlineUserList, setOfflineUserList] = useState([]);
-  
+  const username = sessionStorage.getItem("username");
+  const [opponent, setOpponent] = useState(null);
+
+  const [onlineUserlist, setOnlineUserList] = useState([]);
+  const [offlineUserList, setOfflineUserList] = useState([]);
+
   const [visibleChat, setVisibleChat] = useState({});
   const [receiver, setReceiver] = useState(false);
 
+  useEffect(() => {
+    ValidateToken();
+    const newSocket = io("http://localhost:3002");
+    setSocket(newSocket);
+
+    return () => newSocket.close();
+  }, []);
+
   const handleNewGame = (user) => {
-    debugger
-    if(gameSocket[user]){
-      alert('Must leave previous game')
+    if (gameSocket[user]) {
+      alert("Must leave previous game");
       return;
-    }
-    else{
-        const newGameSocket = io('http://localhost:3001');
-        setGameSocket(prevState => ({
-          ...prevState,
-          [user]: newGameSocket
-        }))
-        setOpponent(user)
-    }};
-``
-
-    useEffect(() => {
-      debugger
-      if (gameSocket[opponent] && opponent && socket) {
-        if(!receiver){
-          socket.emit('sentGameRequest', {sender:username, opponent})
-        }
-    }
-    },[gameSocket, opponent])
-    useEffect(() => {
-      if (socket) {
-        socket.on('updateActiveUsers', (userList) => {
-          const visibilityObj = {};
-          userList.forEach(user => {
-            visibilityObj[user] = false;
-          });
-          setVisibleChat(visibilityObj);
-        });
-      }
-    }, [socket]);
-
-    useEffect(() => {
-        const newSocket = io('http://localhost:3002');
-        setSocket(newSocket);
-
-        return () => newSocket.close();
-    },[]);
-
-    useEffect(() => {
-        if (socket) {
-          socket.emit('join', username);
-        }
-    }, [socket, username]);
-
-    useEffect(() => {
-      if (socket) {
-        socket.on('UserJoined', (username) => {
-          alert(`${username} is now online`);
-        })
-
-        socket.on('UserLeft', (username) => {
-          alert(`${username} is now offline`);
-        })
-        socket.on('updateActiveUsers', (userList) => {
-          setOnlineUserList(userList);
-          sessionStorage.setItem('onlineUserList', JSON.stringify(userList));
-          
-        });
-        socket.on('updateOfflineUsers', (userList) => {
-          setOfflineUserList(userList);
-          sessionStorage.setItem('offlineUserList', JSON.stringify(userList));
-        });
-        socket.on('gameRequest', (sender)=>{
-          alert(`${sender} sent you a game request`)
-          setReceiver(true);
-        })
-      }
-    }, [socket]);
-    
-    const handleOpenChat = (user) => {
-      setVisibleChat(prevState => ({
+    } else {
+      const newGameSocket = io("http://localhost:3001");
+      setGameSocket((prevState) => ({
         ...prevState,
-        [user]: !prevState[user]
-      })
-    );
-    };
+        [user]: newGameSocket,
+      }));
+      setOpponent(user);
+    }
+  };
 
+  useEffect(() => {
+    if (gameSocket[opponent] && opponent && socket) {
+      if (!receiver) {
+        socket.emit("sentGameRequest", { sender: username, opponent });
+      }
+    }
+  }, [gameSocket, opponent]);
+  useEffect(() => {
+    if (socket) {
+      socket.on("updateActiveUsers", (userList) => {
+        const visibilityObj = {};
+        userList.forEach((user) => {
+          visibilityObj[user] = false;
+        });
+        setVisibleChat(visibilityObj);
+      });
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit("join", username);
+    }
+  }, [socket, username]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("UserJoined", (username) => {
+        alert(`${username} is now online`);
+      });
+
+      socket.on("UserLeft", (username) => {
+        alert(`${username} is now offline`);
+      });
+      socket.on("updateActiveUsers", (userList) => {
+        setOnlineUserList(userList);
+        sessionStorage.setItem("onlineUserList", JSON.stringify(userList));
+      });
+      socket.on("updateOfflineUsers", (userList) => {
+        setOfflineUserList(userList);
+        sessionStorage.setItem("offlineUserList", JSON.stringify(userList));
+      });
+      socket.on("gameRequest", (sender) => {
+        alert(`${sender} sent you a game request`);
+        setReceiver(true);
+      });
+    }
+  }, [socket]);
+
+  const handleOpenChat = (user) => {
+    setVisibleChat((prevState) => ({
+      ...prevState,
+      [user]: !prevState[user],
+    }));
+  };
 
   return (
-    <div>
-        <div>
-            <h2>Online Users</h2>
-            <ul>
-                  {onlineUserlist.filter(user => user !== username).map((user, index) => (
-                    
-                    <li key={index}>
-                      {user}
-                      <button onClick={() => handleOpenChat(user)}>Chat</button>
-                      <Chat visibility={visibleChat[user]} sender={username} receiver={user}></Chat>
-                      <button onClick={() => handleNewGame(user)}>New Game</button>
-                      {gameSocket[user] ? <Game socket={gameSocket[user]} user={username} opponent={user}></Game> : null}
-                    </li>
-                ))}
-            </ul>
-        </div>
-        <div>
-           <h2>Offline Users</h2>
-           <ul>
-                {offlineUserList.filter(user => user !== '').map((user, index) => (
-                  <li key={index}>{user}</li>
-                ))}
-          </ul>
-        </div>
+    <div className="left-panel">
+      <div>
+        <h2>Online Users</h2>
+        <ul>
+          {onlineUserlist
+            .filter((user) => user !== username)
+            .map((user, index) => (
+              <li key={index}>
+                {user}
+                <button onClick={() => handleOpenChat(user)}>Chat</button>
+                <div className="chat-panel">
+                  <Chat
+                    className="chat-panel"
+                    visibility={visibleChat[user]}
+                    sender={username}
+                    receiver={user}
+                  ></Chat>
+                </div>
+                <button onClick={() => handleNewGame(user)}>New Game</button>
+                {gameSocket[user] ? (
+                  <div className="game-panel">
+                    <Game
+                      socket={gameSocket[user]}
+                      user={username}
+                      opponent={user}
+                    ></Game>
+                  </div>
+                ) : null}
+              </li>
+            ))}
+        </ul>
       </div>
-  )
-}
+      <div>
+        <h2>Offline Users</h2>
+        <ul>
+          {offlineUserList
+            .filter((user) => user !== "")
+            .map((user, index) => (
+              <li key={index}>{user}</li>
+            ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
 
-export default OnlineUsers
-
+export default OnlineUsers;

@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import "./newGame.css";
-
+import ValidateToken from '../authentication/ValidateToken.jsx'
 import GameBoard from "./components/GameBoard";
 import Player from "./components/Player";
 import Log from "./components/Log";
@@ -78,6 +78,7 @@ const Game = ({ socket, user, opponent }) => {
   const room = privateRoomString();
 
   useEffect(() => {
+    ValidateToken();
     if (socket) {
       socket.emit("joinGameRoom", room, user);
     }
@@ -92,7 +93,7 @@ const Game = ({ socket, user, opponent }) => {
         alert(`${opponent} gave up, You win!`);
         setTimeout(() => {
           window.location.reload();
-        }, 3000); 
+        }, 4000); 
       })
       socket.on("opponentGameMove", ({ row, col, activePlayer}) => {
         console.log(row,col);
@@ -143,7 +144,7 @@ const Game = ({ socket, user, opponent }) => {
     setTimeout(function() {
       window.location.reload();
       setGameDisplay(false);
-    }, 5000); 
+    }, 7000); 
   }
 
   return (
@@ -171,7 +172,7 @@ const Game = ({ socket, user, opponent }) => {
         )}
         <GameBoard onSelectUser={handleUser} board={gameBoard} />
       </div>
-      <button onClick={() => handleGiveUp(user)}>Give up</button>
+      <button className="give-up-button" onClick={() => handleGiveUp(user)}>Give up</button>
       <Log turns={gameTurns} />
     </> : null}
     </>

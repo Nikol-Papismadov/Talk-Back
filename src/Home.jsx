@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Game from './componenets/game/Game';
+import Logout from './componenets/authentication/Logout'
 import OnlineUsers from './componenets/onlineUsers/OnlineUsers';
 import Navigation from './componenets/layout/Navigation';
 
@@ -9,6 +9,7 @@ const Home = () => {
     <div>
       <Navigation></Navigation>
       <OnlineUsers/>
+      <Logout></Logout>
     </div>
   );
 };

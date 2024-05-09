@@ -1,9 +1,6 @@
-// Login.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { isLoggedIn } from '../game/services/Recoil';
-//import jwt from 'jsonwebtoken';
+import './authentication.css'
 
 function Login({ lastLoggedInUsername }) {
   const navigate=useNavigate();
@@ -78,7 +75,7 @@ function Login({ lastLoggedInUsername }) {
         
         <button type="submit">Login</button>
       </form>
-      <div>Create new account</div>
+      <label>Create new account</label>
       <button>
         <Link to="/register">Register</Link>
       </button>

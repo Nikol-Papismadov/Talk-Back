@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, useNavigate, Link } from 'react-router-dom';
 
+import './authentication.css'
+
 
 function Register() {
   const navigate = useNavigate(); 

@@ -1,0 +1,16 @@
+.chat{
+    background-color: rgb(171, 171, 237);
+    color: midnightblue;
+    padding: 10px;
+    width: 300px;
+    height: 176px; 
+    overflow-y: auto;
+}
+.receiver-header{
+background-color: blueviolet;
+}
+
+.chat-input{
+    position:absolute;
+    bottom: 0%
+}

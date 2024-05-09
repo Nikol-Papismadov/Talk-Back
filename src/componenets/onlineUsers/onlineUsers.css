@@ -1,0 +1,32 @@
+.alert-online-users div{
+    position: absolute;
+    background-color: mediumpurple;
+    color: black;
+    width: 200px;
+    height: 50px;
+}
+.left-panel {
+    position: absolute;
+    width: 250px; 
+    position: absolute;
+    background-color: #090c73cd; 
+    top: 104px;
+    bottom: 0px;
+}
+
+.chat-panel {
+    position:absolute;
+    left: 250px;
+    bottom: 0px;
+    width: 300px;
+    height: 200px; 
+}
+
+.game-panel {
+    position: absolute;
+    width: 950px; /* Adjust as needed */
+    height: 750px; 
+    left:550px;
+    top:-50px;
+    overflow:hidden; 
+}
