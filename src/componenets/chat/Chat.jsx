@@ -39,13 +39,6 @@ const Chat = ({ visibility, sender, receiver }) => {
         alert(`${sender} sent you a new message`);
       });
 
-      // socket.on('userJoined', ( username ) => {
-      //     setHistory((prevHistory) => [...prevHistory, (`${username} joined the chat`)]);
-      // });
-
-      // socket.on('userLeft', ( username ) => {
-      //     setHistory((prevHistory) => [...prevHistory, (`${username} left the chat`)]);
-      // });
     }
   }, [socket, room]);
 

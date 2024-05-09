@@ -11,7 +11,7 @@ const Navigation = () => {
         <h2>TalkBack</h2>
         <div className='user-options'>
             <p>Hello {user}</p>
-            <div class="user-icon">
+            <div className="user-icon">
 
                 <img className='user-icon' src={userIcon} alt="user-icon" />
             </div>

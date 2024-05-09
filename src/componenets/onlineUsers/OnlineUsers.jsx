@@ -8,6 +8,8 @@ import ValidateToken from "../authentication/ValidateToken";
 const OnlineUsers = () => {
   const [socket, setSocket] = useState(null);
   const [gameSocket, setGameSocket] = useState({});
+  const [inGame, setInGame] = useState(false); // State to track whether the user is in a game
+
 
   const username = sessionStorage.getItem("username");
   const [opponent, setOpponent] = useState(null);
@@ -27,25 +29,25 @@ const OnlineUsers = () => {
   }, []);
 
   const handleNewGame = (user) => {
-    if (gameSocket[user]) {
-      alert("Must leave previous game");
-      return;
-    } else {
+      setInGame(true);
+
       const newGameSocket = io("http://localhost:3001");
       setGameSocket((prevState) => ({
         ...prevState,
         [user]: newGameSocket,
       }));
       setOpponent(user);
-    }
+    
   };
 
   useEffect(() => {
+   
     if (gameSocket[opponent] && opponent && socket) {
       if (!receiver) {
         socket.emit("sentGameRequest", { sender: username, opponent });
       }
     }
+  
   }, [gameSocket, opponent]);
   useEffect(() => {
     if (socket) {
@@ -72,9 +74,13 @@ const OnlineUsers = () => {
       });
 
       socket.on("UserLeft", (username) => {
+        setInGame(false);
         alert(`${username} is now offline`);
+        
+
       });
       socket.on("updateActiveUsers", (userList) => {
+       
         setOnlineUserList(userList);
         sessionStorage.setItem("onlineUserList", JSON.stringify(userList));
       });
@@ -115,7 +121,12 @@ const OnlineUsers = () => {
                     receiver={user}
                   ></Chat>
                 </div>
-                <button onClick={() => handleNewGame(user)}>New Game</button>
+                <button
+                  onClick={() => handleNewGame(user)}
+                  disabled={inGame} // Disable new game button if user is in a game
+                >
+                  New Game
+                </button>
                 {gameSocket[user] ? (
                   <div className="game-panel">
                     <Game
