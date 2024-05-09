@@ -1,23 +1,16 @@
-.alert-online-users div{
-    position: absolute;
-    background-color: mediumpurple;
-    color: black;
-    width: 200px;
-    height: 50px;
-}
+
 .left-panel {
     position: absolute;
     width: 250px; 
-    position: absolute;
     background-color: #090c73cd; 
     top: 104px;
     bottom: 0px;
 }
 
 .chat-panel {
-    position:absolute;
-    left: 250px;
-    bottom: 0px;
+    position:relative;
+    left: 210px;
+    /* bottom: 0px; */
     width: 300px;
     height: 200px; 
 }

@@ -113,6 +113,11 @@ const OnlineUsers = () => {
               <li key={index}>
                 {user}
                 <button onClick={() => handleOpenChat(user)}>Chat</button>
+                <button
+                  onClick={() => handleNewGame(user)}
+                  disabled={inGame} >
+                  New Game
+                </button>
                 <div className="chat-panel">
                   <Chat
                     className="chat-panel"
@@ -121,12 +126,6 @@ const OnlineUsers = () => {
                     receiver={user}
                   ></Chat>
                 </div>
-                <button
-                  onClick={() => handleNewGame(user)}
-                  disabled={inGame} // Disable new game button if user is in a game
-                >
-                  New Game
-                </button>
                 {gameSocket[user] ? (
                   <div className="game-panel">
                     <Game
